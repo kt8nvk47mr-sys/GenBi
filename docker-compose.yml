@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GP_HOST=greenplum
+      - GP_PORT=5432
+      - GP_DATABASE=genbi
+      - GP_USER=gpadmin
+      - GP_PASSWORD=${GP_PASSWORD:-}
+      - LITELLM_URL=http://litellm:4000
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
+    depends_on:
+      - greenplum
+      - redis
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  greenplum:
+    image: greenplum/greenplum:6.25.0
+    ports:
+      - "5432:5432"
+    environment:
+      - MASTER_HOST=greenplum
+      - MASTER_PORT=5432
+      - MASTER_DATA_DIRECTORY=/data/gpseg-1
+    volumes:
+      - greenplum-data:/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports:
+      - "4000:4000"
+    environment:
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-your-master-key}
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml
+
+volumes:
+  greenplum-data:
