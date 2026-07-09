@@ -1,8 +1,28 @@
+# Dependencies
 node_modules/
-venv/
 __pycache__/
 *.pyc
-*.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Environment
 .env
-.mimocode/
-.playwright-mcp/
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+venv/
+.venv/

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, chat, feedback, data, settings
+from app.api import auth, chat, feedback, data, settings, knowledge
 from app.core.database import engine, Base
 from app.core.security import get_password_hash
 
@@ -23,6 +23,7 @@ app.include_router(chat.router)
 app.include_router(feedback.router)
 app.include_router(data.router)
 app.include_router(settings.router)
+app.include_router(knowledge.router)
 
 
 @app.on_event("startup")
